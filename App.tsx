@@ -24,20 +24,39 @@ export default function App() {
 
   
 
-  const handleSubmitDrawing = useCallback(async () => {
+ const handleSubmitDrawing = useCallback(async () => {
     if (!canvasRef.current || !wordToDraw) return;
-    // handleSubmitDrawing 함수 내부 (App.tsx)
-const response = await fetch('/.netlify/functions/gemini', {
-  method: 'POST',
-  body: JSON.stringify({ word: wordToDraw, imageDataUrl: imageDataUrl }),
-});
-const data = await response.json();
-setGeminiResponse(data.feedback);
+    
     const imageDataUrl = canvasRef.current.exportAsBase64();
     if (!imageDataUrl) {
         setError("The canvas is empty! Please draw something.");
         return;
     }
+
+    setGameState('evaluating');
+    setError(null);
+    try {
+      // Netlify 함수 호출 (POST 요청)
+      const response = await fetch('/.netlify/functions/gemini', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ word: wordToDraw, imageDataUrl: imageDataUrl }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to evaluate drawing from server.');
+      }
+
+      const data = await response.json();
+      setGeminiResponse(data.feedback);
+      setGameState('result');
+    } catch (err) {
+      setError('Could not evaluate the drawing. The API might be busy. Please try again.');
+      setGameState('drawing');
+    }
+  }, [wordToDraw]);
 
     setGameState('evaluating');
     setError(null);
