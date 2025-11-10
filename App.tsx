@@ -39,7 +39,13 @@ export default function App() {
 
   const handleSubmitDrawing = useCallback(async () => {
     if (!canvasRef.current || !wordToDraw) return;
-    
+    // handleSubmitDrawing 함수 내부 (App.tsx)
+const response = await fetch('/.netlify/functions/gemini', {
+  method: 'POST',
+  body: JSON.stringify({ word: wordToDraw, imageDataUrl: imageDataUrl }),
+});
+const data = await response.json();
+setGeminiResponse(data.feedback);
     const imageDataUrl = canvasRef.current.exportAsBase64();
     if (!imageDataUrl) {
         setError("The canvas is empty! Please draw something.");
