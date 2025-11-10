@@ -1,0 +1,5 @@
+{
+  "name": "Gemini Drawing Game",
+  "description": "A fun drawing game where you are given a word to draw, and Gemini AI provides feedback on your masterpiece. Test your artistic skills and see what the AI thinks!",
+  "requestFramePermissions": []
+}
