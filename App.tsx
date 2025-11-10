@@ -22,20 +22,7 @@ export default function App() {
   
   const canvasRef = useRef<CanvasRef>(null);
 
-  const handleNewWord = useCallback(async () => {
-    setGameState('loading_word');
-    setError(null);
-    setGeminiResponse('');
-    canvasRef.current?.clearCanvas();
-    try {
-      const newWord = await getWordToDraw();
-      setWordToDraw(newWord);
-      setGameState('drawing');
-    } catch (err) {
-      setError('Could not fetch a word to draw. Please check your API key and try again.');
-      setGameState('start');
-    }
-  }, []);
+  
 
   const handleSubmitDrawing = useCallback(async () => {
     if (!canvasRef.current || !wordToDraw) return;
